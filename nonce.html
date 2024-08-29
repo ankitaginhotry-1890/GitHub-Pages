@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Genrate AuthNet Nonce</title>
+  <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+</head>
+<body>
+  
+  <script type="text/javascript" src="https://jstest.authorize.net/v3/AcceptUI.js" charset="utf-8"> </script>
+ 
+  <input type="hidden" name="dataValue" id="dataValue" value=""/>
+  <input type="hidden" name="dataDescriptor" id="dataDescriptor" value=""/>
+  <div id="paymentButtonDiv">
+    <button type="button"
+      class="AcceptUI"
+      style="background-color: #008CBA; color: white; border: none;cursor: pointer;padding: 5px 10px;"
+      data-hostedPaymentPaymentOptions ='{"cardCodeRequired": true, "showCreditCard": true, "showBankAccount": true, "customerProfileId": false}'
+      data-billingAddressOptions='{"show":false, "required":false}'
+      data-apiLoginID="7A6nVuQu52"
+      data-clientKey="4aMcen4xgHYm4pN5Bx7u9rCePk7UZ6zW5D84X7y87268g8hPQpqYTs6gSkF5SQaM"
+      data-acceptUIFormBtnTxt="Submit"
+      data-acceptUIFormHeaderTxt="Card Information"
+      data-responseHandler="responseHandler">Authorize
+    </button>
+
+    <h5 id="textValue"></h1>
+  </div>
+
+  <script type="text/javascript">
+    console.log("ANKIT AGINHOTRY");
+    // This method will be called by AuthNet script
+    function responseHandler(response) {
+      if (response.messages.resultCode === "Error") {
+        var i = 0;
+        var authNetErrorMsgTxt = "";
+        while (i < response.messages.message.length) {
+          authNetErrorMsgTxt = response.messages.message[i].code + ": " + 
+            response.messages.message[i].text + "<br>";
+          i = i + 1;
+        }
+        alert(authNetErrorMsgTxt);
+      } else {
+        console.log(response.opaqueData);
+        $("#textValue").text(response.opaqueData.dataValue);
+        var token = response.opaqueData.dataValue;
+        console.log(token);
+      }
+    }
+    // Set the response from Authnet contains dataDescriptor & dataValue
+    // This is needed to charge the credit Card
+    function paymentFormUpdate(opaqueData) {
+      document.getElementById("dataDescriptor").value = opaqueData.dataDescriptor;
+      document.getElementById("dataValue").value = opaqueData.dataValue;
+
+    }
+</script>
+</body>
+</html>
+</body>
+</html>
